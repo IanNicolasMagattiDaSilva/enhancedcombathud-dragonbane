@@ -45,6 +45,11 @@
       "lang": "sv",
       "name": "Svenska",
       "path": "languages/sv.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "languages/pt-BR.json"
     }
   ],
   "url": "https://github.com/rayners/enhancedcombathud-dragonbane",
