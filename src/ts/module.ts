@@ -2,9 +2,11 @@ import "../styles/module.scss";
 
 import { registerSettings, registerSkillSettings } from "./settings";
 import { setupDragonbaneHud } from "./dragonbaneui";
+import { registerRoundResetHook } from "./dragonbane-action-tracker";
 
 Hooks.once("init", () => {
   registerSettings();
+  registerRoundResetHook();
   console.log("Argon HUD - Dragonbane: init complete");
 });
 

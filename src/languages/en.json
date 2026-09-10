@@ -45,6 +45,13 @@
       "heroic-ability": "Heroic Ability",
       "wp-cost": "WP Cost"
     },
+    "notifications": {
+      "action-already-used": "You have already acted this round.",
+      "reaction-already-used": "You have already reacted this round.",
+      "run-consumes-action": "Running consumes your action for this round.",
+      "run-no-action-available": "You have no action available to run.",
+      "reaction-consumes-movement": "Reacting consumes your remaining movement for this round."
+    },
     "weapon": {
       "tooltips": {
         "damage": "Damage",

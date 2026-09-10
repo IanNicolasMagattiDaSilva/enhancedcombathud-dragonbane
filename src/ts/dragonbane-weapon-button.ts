@@ -1,3 +1,5 @@
+import { consumeAction } from "./dragonbane-action-tracker";
+
 const ARGON = CONFIG.ARGON;
 
 export class DragonbaneWeaponButton extends ARGON.MAIN.BUTTONS.ItemButton {
@@ -11,8 +13,10 @@ export class DragonbaneWeaponButton extends ARGON.MAIN.BUTTONS.ItemButton {
     };
   }
 
-  async _onLeftClick() {
-    game.dragonbane.rollItem(this.item.name, this.item.type);
+  async _onLeftClick(event) {
+    return consumeAction(this.actor, async () => {
+      game.dragonbane.rollItem(this.item.name, this.item.type);
+    })(event);
   }
 
   get hasTooltip() {

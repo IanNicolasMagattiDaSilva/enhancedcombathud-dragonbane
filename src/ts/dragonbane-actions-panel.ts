@@ -1,6 +1,10 @@
 import { id as MODULE_NAME } from "../module.json";
 import { DragonbaneWeaponButton } from "./dragonbane-weapon-button";
 import { DragonbaneSpellsButton } from "./dragonbane-spells-button";
+import {
+  consumeAction,
+  hasUsedAction,
+} from "./dragonbane-action-tracker";
 
 const ARGON = CONFIG.ARGON;
 
@@ -20,12 +24,14 @@ class DragonbaneMonsterAttackButton extends ARGON.MAIN.BUTTONS.ActionButton {
   }
 
   async _onLeftClick(event) {
-    this.actor.sheet._onMonsterAttack({
-      type: "click",
-      preventDefault: () => event.preventDefault(),
-      shiftKey: event.shiftKey,
-      ctrlKey: event.ctrlKey,
-    });
+    return consumeAction(this.actor, async (e) => {
+      this.actor.sheet._onMonsterAttack({
+        type: "click",
+        preventDefault: () => e.preventDefault(),
+        shiftKey: e.shiftKey,
+        ctrlKey: e.ctrlKey,
+      });
+    })(event);
   }
 }
 class DragonbaneHeroicAbilitiesButton extends ARGON.MAIN.BUTTONS
@@ -69,8 +75,10 @@ class DragonbaneAbilityButton extends ARGON.MAIN.BUTTONS.ItemButton {
     return this.item?.img;
   }
 
-  async _onLeftClick() {
-    this.actor.useAbility(this.item);
+  async _onLeftClick(event) {
+    return consumeAction(this.actor, async () => {
+      this.actor.useAbility(this.item);
+    })(event);
   }
 
   get hasTooltip() {
@@ -166,16 +174,16 @@ class DragonbaneSkillButton extends ARGON.MAIN.BUTTONS.ActionButton {
     return this._label;
   }
 
-  async _onLeftClick() {
-    // use the configured skill name
-    // or fallback if somehow it's not set to anything
-    game.dragonbane.rollItem(
-      (game.settings.get(MODULE_NAME, `skillName${this.skillName}`) as
-        | string
-        | null
-        | undefined) || this.skillName,
-      "skill",
-    );
+  async _onLeftClick(event) {
+    return consumeAction(this.actor, async () => {
+      game.dragonbane.rollItem(
+        (game.settings.get(MODULE_NAME, `skillName${this.skillName}`) as
+          | string
+          | null
+          | undefined) || this.skillName,
+        "skill",
+      );
+    })(event);
   }
 }
 
@@ -189,9 +197,8 @@ export default class DragonbaneActionsPanel extends ARGON.MAIN.ActionPanel {
   }
 
   get currentActions() {
-    // they have to be up/alive, or rallied...
-    // How do we determine rallied?
-    return this.actor.system.hitPoints?.value > 0 ? 1 : 0;
+    if (this.actor.system.hitPoints?.value <= 0) return 0;
+    return hasUsedAction(this.actor) ? 0 : 1;
   }
 
   get maxActions() {
@@ -259,6 +266,20 @@ export default class DragonbaneActionsPanel extends ARGON.MAIN.ActionPanel {
     }
 
     return Buttons;
+  }
+
+  _actionStateHookId: number | null = null;
+
+  override async _renderInner() {
+    await super._renderInner();
+    if (this._actionStateHookId === null) {
+      this._actionStateHookId = Hooks.on(
+        `${MODULE_NAME}.actionStateChanged`,
+        (actorId: string) => {
+          if (actorId === this.actor?.id) this.updateActionUse();
+        },
+      );
+    }
   }
 
   // hacky, but it hides/shows it when the death state changes
