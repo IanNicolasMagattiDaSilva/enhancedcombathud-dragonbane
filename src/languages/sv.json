@@ -5,6 +5,8 @@
       "includeUnpreparedSpellsHint": "Inkludera oförberedda besvärjelser i besvärjelselistan",
       "groupSpellsByRank": "Gruppera besvärjelser efter nivå",
       "groupSpellsByRankHint": "",
+      "preferShieldParry": "Föredra sköld för parering",
+      "preferShieldParryHint": "Vikta det automatiska valet av pareringsobjekt till förmån för sköldar (via vapenegenskaper). Annars sortera på totalen av färdighet plus hållbarhet.",
       "skillNameHealing": "Färdighet för Första Hjälpen-knappen",
       "skillNamePersuasion": "Färdighet för Samla-knappen",
       "skillNameEvade": "Färdighet för Undvika-knappen"

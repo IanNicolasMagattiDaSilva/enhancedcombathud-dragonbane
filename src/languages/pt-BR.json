@@ -1,0 +1,76 @@
+{
+  "enhancedcombathud-dragonbane": {
+    "settings": {
+      "includeUnpreparedSpells": "Incluir magias não preparadas",
+      "includeUnpreparedSpellsHint": "Inclui magias não preparadas na lista de magias",
+      "groupSpellsByRank": "Agrupar magias por nível",
+      "groupSpellsByRankHint": "",
+      "preferShieldParry": "Preferir escudo para aparar",
+      "preferShieldParryHint": "Prioriza escudos ao selecionar automaticamente o item de aparar (via traços de arma). Caso contrário, ordena pela soma da perícia mais durabilidade.",
+      "skillNameHealing": "Perícia para o botão Primeiros Socorros",
+      "skillNamePersuasion": "Perícia para o botão Encorajar",
+      "skillNameEvade": "Perícia para o botão Esquivar"
+    },
+    "panels": {
+      "attack": "Ataque",
+      "actions": "Ações",
+      "magic": "Magia",
+      "defense": "Defesa",
+      "defense-reactions": "Defesa/Reações",
+      "dying": "Morrendo"
+    },
+    "actions": {
+      "first-aid": "Primeiros Socorros",
+      "rally": "Encorajar",
+      "rally-self": "Encorajar (a si mesmo)",
+      "parry": "Aparar",
+      "dodge": "Esquivar",
+      "fear-table": "Medo",
+      "monster-attack": "Ataque de Monstro",
+      "monster-defend": "Defesa de Monstro",
+      "death-roll": "Rolagem de Morte"
+    },
+    "buttons": {
+      "heroic-abilities": "Habilidades Heroicas",
+      "round-rest": "Descanso de Rodada",
+      "spells": "Magias",
+      "shift-rest": "Descanso de Turno",
+      "stretch-rest": "Descanso de Entretempo"
+    },
+    "portrait": {
+      "hp": "PV",
+      "wp": "FV"
+    },
+    "tooltips": {
+      "heroic-ability": "Habilidade Heroica",
+      "wp-cost": "Custo de FV"
+    },
+    "weapon": {
+      "tooltips": {
+        "damage": "Dano",
+        "durability": "Durabilidade",
+        "range": "Alcance",
+        "features": "Traços"
+      }
+    },
+    "drawer": {
+      "attributes-and-skills": "Atributos e Perícias",
+      "skills": "Perícias",
+      "magic": "Magia",
+      "spells": {
+        "rank": "Nível {rank}"
+      },
+      "secondary-skills": "Perícias Secundárias",
+      "weapons": "Armas",
+      "attribute": "Atributo",
+      "attributes": {
+        "STR": "FOR",
+        "CON": "CON",
+        "AGL": "AGI",
+        "INT": "INT",
+        "WIL": "FV",
+        "CHA": "CAR"
+      }
+    }
+  }
+}
