@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.13.0](https://github.com/IanNicolasMagattiDaSilva/enhancedcombathud-dragonbane/compare/v0.12.0...v0.13.0) (2026-09-10)
+
+
+### Features
+
+* declare Foundry VTT v14 compatibility ([#1](https://github.com/IanNicolasMagattiDaSilva/enhancedcombathud-dragonbane/pull/1))
+
+
+### Documentation
+
+* added `MIGRATION-V14.md` with migration notes and caveats
+* updated `README.md` and `CLAUDE.md` to reflect v14 support
+
 ## [0.12.0](https://github.com/rayners/enhancedcombathud-dragonbane/compare/enhancedcombathud-dragonbane-v0.11.0...enhancedcombathud-dragonbane-v0.12.0) (2025-10-12)
 
 
