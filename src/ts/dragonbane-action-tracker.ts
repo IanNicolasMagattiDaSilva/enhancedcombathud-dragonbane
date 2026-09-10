@@ -80,6 +80,17 @@ export function registerRoundResetHook(): void {
     }
   });
 
+  // Dragonbane monsters with Ferocity > 1 get N initiative cards per round.
+  // The yze-combat module represents this by creating N duplicate combatant
+  // entries in the tracker (via duplicateCombatantOnCombatStart + actorSpeedAttribute).
+  // Each entry is one independent turn — reset the actor's flags when its turn
+  // starts so each ferocity-turn gets a clean action economy.
+  Hooks.on("combatTurn", async (combat: Combat) => {
+    const actor = combat.combatant?.actor;
+    if (!actor) return;
+    await resetRoundState(actor);
+  });
+
   // When combat ends, clear any leftover flags so out-of-combat play is clean.
   Hooks.on("deleteCombat", async (combat: Combat) => {
     for (const combatant of combat.combatants) {
