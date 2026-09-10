@@ -106,7 +106,9 @@ class DragonbaneAbilityButton extends ARGON.MAIN.BUTTONS.ItemButton {
 
 class DragonbaneRoundRestButton extends ARGON.MAIN.BUTTONS.ActionButton {
   get classes() {
-    return ["action-element", "dragonbane-action-element"];
+    const base = ["action-element", "dragonbane-action-element"];
+    if (!this.actor?.system?.canRestRound) base.push("disabled");
+    return base;
   }
 
   get icon() {
@@ -118,8 +120,17 @@ class DragonbaneRoundRestButton extends ARGON.MAIN.BUTTONS.ActionButton {
     );
   }
 
+  override async _renderInner() {
+    await super._renderInner();
+    this.element.classList.toggle(
+      "disabled",
+      !this.actor?.system?.canRestRound,
+    );
+  }
+
   async _onLeftClick(event) {
-    this.actor.system.canRestRound && this.actor.sheet._onRestRound(event);
+    if (!this.actor?.system?.canRestRound) return;
+    this.actor.sheet._onRestRound(event);
   }
 }
 
@@ -180,7 +191,7 @@ export default class DragonbaneActionsPanel extends ARGON.MAIN.ActionPanel {
   get currentActions() {
     // they have to be up/alive, or rallied...
     // How do we determine rallied?
-    return this.actor.system.hitPoints?.value > 0;
+    return this.actor.system.hitPoints?.value > 0 ? 1 : 0;
   }
 
   get maxActions() {
