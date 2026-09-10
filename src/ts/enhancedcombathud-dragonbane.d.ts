@@ -76,6 +76,9 @@ class ArgonComponent {
   async _renderInner(): void;
   async render(): void;
   element: HTMLElement;
+
+  // Present on MovementHud subclass at runtime; declared here to allow overrides.
+  updateMovement?(): Promise<void>;
 }
 
 class DragonbaneItem extends Item {

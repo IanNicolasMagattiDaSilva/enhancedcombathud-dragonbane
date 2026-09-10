@@ -1,4 +1,8 @@
 import { id as MODULE_NAME } from "../module.json";
+import {
+  consumeAction,
+  hasUsedAction,
+} from "./dragonbane-action-tracker";
 
 const ARGON = CONFIG.ARGON;
 
@@ -21,10 +25,16 @@ class DragonbaneMonsterDefendButton extends ARGON.MAIN.BUTTONS.ActionButton {
   }
 
   async _onLeftClick(event) {
-    this.actor.sheet._onMonsterDefend({
-      type: "click",
-      preventDefault: () => event.preventDefault(),
-    });
+    return consumeAction(
+      this.actor,
+      async (e) => {
+        this.actor.sheet._onMonsterDefend({
+          type: "click",
+          preventDefault: () => e.preventDefault(),
+        });
+      },
+      { isReaction: true },
+    )(event);
   }
 }
 
@@ -40,11 +50,18 @@ class DragonbaneEvadeButton extends ARGON.MAIN.BUTTONS.ActionButton {
     return "modules/enhancedcombathud/icons/svg/dodging.svg";
   }
 
-  async _onLeftClick() {
-    return game.dragonbane.rollItem(
-      (game.settings.get(MODULE_NAME, "skillNameEvade") as string) || "Evade",
-      "skill",
-    );
+  async _onLeftClick(event) {
+    return consumeAction(
+      this.actor,
+      async () => {
+        return game.dragonbane.rollItem(
+          (game.settings.get(MODULE_NAME, "skillNameEvade") as string) ||
+            "Evade",
+          "skill",
+        );
+      },
+      { isReaction: true },
+    )(event);
   }
 }
 
@@ -94,12 +111,19 @@ class DragonbaneParryButton extends ARGON.MAIN.BUTTONS.ActionButton {
     }
   }
 
-  async _onLeftClick() {
-    // not sure if there is a way to default it to a parry
-    // (doesn't seem to be one... yet)
-    if (this.parryWeapon) {
-      game.dragonbane.rollItem(this.parryWeapon.name, this.parryWeapon.type);
-    }
+  async _onLeftClick(event) {
+    return consumeAction(
+      this.actor,
+      async () => {
+        if (this.parryWeapon) {
+          game.dragonbane.rollItem(
+            this.parryWeapon.name,
+            this.parryWeapon.type,
+          );
+        }
+      },
+      { isReaction: true },
+    )(event);
   }
 }
 
@@ -159,6 +183,10 @@ export default class DragonbaneDefensePanel extends ARGON.MAIN.ActionPanel {
     return 1;
   }
 
+  get currentActions() {
+    return hasUsedAction(this.actor) ? 0 : 1;
+  }
+
   async _getButtons() {
     if (this.actor.type === "monster") {
       return [new DragonbaneMonsterDefendButton()];
@@ -176,5 +204,19 @@ export default class DragonbaneDefensePanel extends ARGON.MAIN.ActionPanel {
 
   get colorScheme() {
     return 3;
+  }
+
+  _actionStateHookId: number | null = null;
+
+  override async _renderInner() {
+    await super._renderInner();
+    if (this._actionStateHookId === null) {
+      this._actionStateHookId = Hooks.on(
+        `${MODULE_NAME}.actionStateChanged`,
+        (actorId: string) => {
+          if (actorId === this.actor?.id) this.updateActionUse();
+        },
+      );
+    }
   }
 }

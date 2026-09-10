@@ -82,6 +82,15 @@
         font-family: QTFrizQuad;
       }
 
+      .action-element.dragonbane-action-element {
+        &.disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          pointer-events: none;
+          filter: grayscale(0.6);
+        }
+      }
+
       .features-container {
         .feature-element-title,
         .feature-accordion-title {

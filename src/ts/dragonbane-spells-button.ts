@@ -1,4 +1,5 @@
 import { id as MODULE_NAME } from "../module.json";
+import { consumeAction } from "./dragonbane-action-tracker";
 
 const ARGON = CONFIG.ARGON;
 
@@ -119,21 +120,15 @@ class DragonbaneSpellButton extends ARGON.MAIN.BUTTONS.ItemButton {
   }
 
   async _onLeftClick(event) {
-    // You'd think this would be enough:
-    // game.dragonbane.rollItem(this.item.name, this.item.type);
-
-    // But it doesn't account for:
-    // - Magic tricks
-    // - Maybe something else? But I think it's just tricks
-
-    // We're going to have to fake an event, since this is actually
-    // a mouseup event instead of the expected left click (per the
-    // sheet code)
-    this.actor.sheet._onSkillRoll({
-      type: "click",
-      currentTarget: this.element,
-      preventDefault: () => event.preventDefault(),
-    });
+    return consumeAction(this.actor, async (e) => {
+      // Fake an event because the sheet expects a mouseup-style click.
+      // Also needed for magic tricks which don't go through rollItem.
+      this.actor.sheet._onSkillRoll({
+        type: "click",
+        currentTarget: this.element,
+        preventDefault: () => e.preventDefault(),
+      });
+    })(event);
   }
 
   override async _renderInner() {

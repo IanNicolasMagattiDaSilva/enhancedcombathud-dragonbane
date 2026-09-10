@@ -41,6 +41,13 @@
       "hp": "KP",
       "wp": "VP"
     },
+    "notifications": {
+      "action-already-used": "Du har redan agerat denna rond.",
+      "reaction-already-used": "Du har redan reagerat denna rond.",
+      "run-consumes-action": "Springa förbrukar din handling denna rond.",
+      "run-no-action-available": "Du har ingen handling tillgänglig för att springa.",
+      "reaction-consumes-movement": "Att reagera förbrukar din återstående rörelse denna rond."
+    },
     "tooltips": {
       "heroic-ability": "Hjälteförmåga",
       "wp-cost": "VP-kostnad"
