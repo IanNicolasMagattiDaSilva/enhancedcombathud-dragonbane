@@ -31,9 +31,15 @@ This module provides a specialized Combat HUD (Heads-Up Display) for the Dragonb
 - Heroic abilities integration
 - Support for characters, NPCs, and monsters
 
+## Foundry VTT v14 Compatibility
+
+Version 0.13.0 adds support for Foundry VTT v14. The module manifest now declares
+`minimum: 13, verified: 14, maximum: 14`. See `MIGRATION-V14.md` for the migration
+notes and known caveats (Argon Combat HUD CORE must also support v14).
+
 ## Foundry VTT v13 Compatibility
 
-Version 0.11.0 adds support for Foundry VTT v13 with the following changes:
+Version 0.11.0 added support for Foundry VTT v13 with the following changes:
 
 1. **Updated Module Manifest**:
 
