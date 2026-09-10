@@ -80,6 +80,9 @@ describe("Component Smoke Tests", () => {
         system: {
           movement: { value: 10 },
         },
+        getFlag: () => undefined,
+        setFlag: async () => {},
+        unsetFlag: async () => {},
       };
       mockToken = {
         actor: mockActor,
