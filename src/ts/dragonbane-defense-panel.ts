@@ -115,14 +115,11 @@ class DragonbaneParryButton extends ARGON.MAIN.BUTTONS.ActionButton {
     return consumeAction(
       this.actor,
       async () => {
-        if (this.parryWeapon) {
-          game.dragonbane.rollItem(
-            this.parryWeapon.name,
-            this.parryWeapon.type,
-          );
-        }
+        const skillName = this.parryWeapon?.system?.skill?.name;
+        if (!skillName) return undefined;
+        return game.dragonbane.rollItem(skillName, "skill");
       },
-      { isReaction: true },
+      { isReaction: true, cancelIfFalsy: true },
     )(event);
   }
 }
