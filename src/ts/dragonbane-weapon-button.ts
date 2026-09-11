@@ -3,30 +3,51 @@ import { consumeAction } from "./dragonbane-action-tracker";
 const ARGON = CONFIG.ARGON;
 
 /**
- * Waits for the user to target a token on the canvas. Shows a notification
- * explaining what to do. Resolves true when a token is targeted, false if the
- * user presses Escape to cancel.
+ * Waits for the user to target a token on the canvas, then resolves true.
+ * Resolves false (without leaking listeners) when:
+ *   - The user presses Escape
+ *   - The HUD's token is deselected (HUD closing)
+ *   - Combat ends
+ *
+ * `hudToken` is the Argon-bound token at call time, used to detect HUD close.
  */
-function awaitTargetSelection(): Promise<boolean> {
+function awaitTargetSelection(hudToken: any): Promise<boolean> {
   return new Promise((resolve) => {
-    const escHandler = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      Hooks.off("targetToken", hookId);
+    let resolved = false;
+
+    const cleanup = (result: boolean) => {
+      if (resolved) return;
+      resolved = true;
+      Hooks.off("targetToken", ids.target);
+      Hooks.off("controlToken", ids.control);
+      Hooks.off("deleteCombat", ids.combat);
       document.removeEventListener("keydown", escHandler);
-      resolve(false);
+      resolve(result);
     };
 
-    // hookId is declared const; escHandler closes over it by reference and is
-    // only called after this assignment completes, so the TDZ is not a risk.
-    const hookId = Hooks.on(
-      "targetToken",
-      (user: any, _token: any, targeted: boolean) => {
-        if (user !== game.user || !targeted) return;
-        Hooks.off("targetToken", hookId);
-        document.removeEventListener("keydown", escHandler);
-        resolve(true);
-      },
-    );
+    const escHandler = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      cleanup(false);
+    };
+
+    // All hook IDs are captured in one object so cleanup() can reference them.
+    // Hooks fire asynchronously (on game events), never during Hooks.on() itself,
+    // so ids is fully initialised before any callback runs.
+    const ids = {
+      target: Hooks.on(
+        "targetToken",
+        (user: any, _token: any, targeted: boolean) => {
+          if (user !== game.user || !targeted) return;
+          cleanup(true);
+        },
+      ),
+      // Cancel when the player's own token is deselected (HUD would close).
+      control: Hooks.on("controlToken", (token: any, controlled: boolean) => {
+        if (!controlled && token === hudToken) cleanup(false);
+      }),
+      // Cancel when combat ends entirely.
+      combat: Hooks.once("deleteCombat", () => cleanup(false)),
+    };
 
     document.addEventListener("keydown", escHandler);
   });
@@ -48,12 +69,16 @@ export class DragonbaneWeaponButton extends ARGON.MAIN.BUTTONS.ItemButton {
       this.actor,
       async () => {
         if (game.user.targets.size === 0) {
+          // When Argon's "rangepicker" setting is enabled, ItemButton._onPreLeftClick
+          // already shows a visual TargetPicker before calling _onLeftClick, so
+          // game.user.targets.size is > 0 by the time we reach this code.
+          // This branch only runs when rangepicker is disabled.
           ui.notifications?.info(
             game.i18n.localize(
               "enhancedcombathud-dragonbane.notifications.select-target",
             ),
           );
-          const targeted = await awaitTargetSelection();
+          const targeted = await awaitTargetSelection(this.token);
           if (!targeted) return undefined;
         }
         return game.dragonbane.rollItem(this.item.name, this.item.type);

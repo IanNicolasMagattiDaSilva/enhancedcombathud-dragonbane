@@ -48,6 +48,8 @@ export async function resetRoundState(actor: ActorLike | undefined): Promise<voi
  * When `cancelIfFalsy` is true the action is only marked as used if the handler
  * returns a truthy value. Use this when the handler may return undefined to
  * indicate that the player cancelled (e.g. closed the roll dialog).
+ * Note: `false` is also falsy and would suppress action consumption — avoid
+ * handlers that return `false` to signal success when using this option.
  */
 export function consumeAction<E = MouseEvent>(
   actor: ActorLike | undefined,

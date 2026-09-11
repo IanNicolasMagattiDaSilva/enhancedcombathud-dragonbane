@@ -13,7 +13,7 @@ interface Dragonbane {
     attributeName: string,
     options?: object,
   ): void;
-  rollItem(itemName: string | null, itemType: string, options?: object): void;
+  rollItem(itemName: string | null, itemType: string, options?: object): Promise<object | undefined>;
   // monsterAttack(): void;
   // monsterDefend(): void;
   // drawTreasureCards(): void;
@@ -71,6 +71,7 @@ class ArgonComponent {
   constructor(...args: any[]);
   // Definitely have
   actor: DragonbaneActor;
+  token: Token | null;
   name?: string;
 
   async _renderInner(): void;
