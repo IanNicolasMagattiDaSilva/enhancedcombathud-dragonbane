@@ -1,4 +1,4 @@
-import { consumeAction } from "./dragonbane-action-tracker";
+import { consumeAction, hasUsedAction } from "./dragonbane-action-tracker";
 
 const ARGON = CONFIG.ARGON;
 
@@ -90,6 +90,18 @@ export class DragonbaneWeaponButton extends ARGON.MAIN.BUTTONS.ItemButton {
             if (!targeted) return undefined;
           } finally {
             this._awaitingTarget = false;
+          }
+          // Another button (Parry, another weapon) may have consumed the
+          // action while we were waiting for the target. consumeAction only
+          // checks hasUsedAction at entry, so we re-check here to avoid
+          // firing the attack after the action was spent elsewhere.
+          if (hasUsedAction(this.actor)) {
+            ui.notifications?.warn(
+              game.i18n.localize(
+                "enhancedcombathud-dragonbane.notifications.action-already-used",
+              ),
+            );
+            return undefined;
           }
         }
         return game.dragonbane.rollItem(this.item.name, this.item.type);

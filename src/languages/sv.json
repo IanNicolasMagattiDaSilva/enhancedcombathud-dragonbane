@@ -47,7 +47,7 @@
       "run-consumes-action": "Springa förbrukar din handling denna rond.",
       "run-no-action-available": "Du har ingen handling tillgänglig för att springa.",
       "reaction-consumes-movement": "Att reagera förbrukar din återstående rörelse denna rond.",
-      "select-target": "Välj ett mål på scenen för att fortsätta; attackdialogrutan öppnas när ett mål har valts. Tryck Escape för att avbryta."
+      "select-target": "Välj ett mål på scenen. Tryck Escape för att avbryta."
     },
     "tooltips": {
       "heroic-ability": "Hjälteförmåga",
