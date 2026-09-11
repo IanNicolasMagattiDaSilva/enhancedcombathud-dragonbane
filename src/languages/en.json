@@ -50,7 +50,8 @@
       "reaction-already-used": "You have already reacted this round.",
       "run-consumes-action": "Running consumes your action for this round.",
       "run-no-action-available": "You have no action available to run.",
-      "reaction-consumes-movement": "Reacting consumes your remaining movement for this round."
+      "reaction-consumes-movement": "Reacting consumes your remaining movement for this round.",
+      "select-target": "Select a target on the canvas. Press Escape to cancel."
     },
     "weapon": {
       "tooltips": {

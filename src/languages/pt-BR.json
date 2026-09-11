@@ -46,7 +46,8 @@
       "reaction-already-used": "Você já reagiu nesta rodada.",
       "run-consumes-action": "Correr consome sua ação desta rodada.",
       "run-no-action-available": "Você não tem ação disponível para correr.",
-      "reaction-consumes-movement": "Reagir consome seu movimento restante desta rodada."
+      "reaction-consumes-movement": "Reagir consome seu movimento restante desta rodada.",
+      "select-target": "Selecione um alvo na cena. Pressione Escape para cancelar."
     },
     "tooltips": {
       "heroic-ability": "Habilidade Heroica",

@@ -44,11 +44,17 @@ export async function resetRoundState(actor: ActorLike | undefined): Promise<voi
  * Wraps a click handler so it only fires when the actor still has an action
  * available, then marks the action as used. Returns a no-op that also emits a
  * UI notification if the actor already acted this round.
+ *
+ * When `cancelIfFalsy` is true the action is only marked as used if the handler
+ * returns a truthy value. Use this when the handler may return undefined to
+ * indicate that the player cancelled (e.g. closed the roll dialog).
+ * Note: `false` is also falsy and would suppress action consumption — avoid
+ * handlers that return `false` to signal success when using this option.
  */
 export function consumeAction<E = MouseEvent>(
   actor: ActorLike | undefined,
   handler: (event: E) => unknown | Promise<unknown>,
-  options: { isReaction?: boolean } = {},
+  options: { isReaction?: boolean; cancelIfFalsy?: boolean } = {},
 ) {
   return async (event: E) => {
     if (hasUsedAction(actor)) {
@@ -59,7 +65,8 @@ export function consumeAction<E = MouseEvent>(
       );
       return;
     }
-    await handler(event);
+    const result = await handler(event);
+    if (options.cancelIfFalsy && !result) return;
     if (options.isReaction) {
       await markReacted(actor);
     } else {
