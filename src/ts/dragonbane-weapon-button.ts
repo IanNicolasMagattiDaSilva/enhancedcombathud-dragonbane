@@ -11,7 +11,7 @@ const ARGON = CONFIG.ARGON;
  *
  * `hudToken` is the Argon-bound token at call time, used to detect HUD close.
  */
-function awaitTargetSelection(hudToken: any): Promise<boolean> {
+export function awaitTargetSelection(hudToken: any): Promise<boolean> {
   return new Promise((resolve) => {
     let resolved = false;
 
@@ -54,6 +54,11 @@ function awaitTargetSelection(hudToken: any): Promise<boolean> {
 }
 
 export class DragonbaneWeaponButton extends ARGON.MAIN.BUTTONS.ItemButton {
+  // Guards against double-clicks while awaitTargetSelection is pending.
+  // Without this, each click would register a new set of hooks and produce
+  // multiple attack dialogs when the target is finally selected.
+  _awaitingTarget = false;
+
   get targets() {
     return 1;
   }
@@ -65,6 +70,7 @@ export class DragonbaneWeaponButton extends ARGON.MAIN.BUTTONS.ItemButton {
   }
 
   async _onLeftClick(event) {
+    if (this._awaitingTarget) return;
     return consumeAction(
       this.actor,
       async () => {
@@ -78,8 +84,13 @@ export class DragonbaneWeaponButton extends ARGON.MAIN.BUTTONS.ItemButton {
               "enhancedcombathud-dragonbane.notifications.select-target",
             ),
           );
-          const targeted = await awaitTargetSelection(this.token);
-          if (!targeted) return undefined;
+          this._awaitingTarget = true;
+          try {
+            const targeted = await awaitTargetSelection(this.token);
+            if (!targeted) return undefined;
+          } finally {
+            this._awaitingTarget = false;
+          }
         }
         return game.dragonbane.rollItem(this.item.name, this.item.type);
       },

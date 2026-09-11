@@ -77,19 +77,16 @@ function parrySortValue(item: DragonbaneItem): number {
 }
 
 class DragonbaneParryButton extends ARGON.MAIN.BUTTONS.ActionButton {
-  _parryWeapon: DragonbaneItem | null = null;
-
-  // Lazily compute the parry weapon when first accessed
+  // Recomputes on every access so weapon swaps, breakage, or durability
+  // changes are reflected without needing to invalidate a cache.
   get parryWeapon(): DragonbaneItem | null {
-    if (this._parryWeapon === null && this.actor) {
-      // select for highest skill+durability
-      this._parryWeapon =
-        this.actor
-          .getEquippedWeapons()
-          .filter((w) => !w.hasWeaponFeature("noparry"))
-          .sort((a, b) => parrySortValue(b) - parrySortValue(a))[0] || null;
-    }
-    return this._parryWeapon;
+    if (!this.actor) return null;
+    return (
+      this.actor
+        .getEquippedWeapons()
+        .filter((w) => !w.hasWeaponFeature("noparry"))
+        .sort((a, b) => parrySortValue(b) - parrySortValue(a))[0] || null
+    );
   }
 
   get classes() {
